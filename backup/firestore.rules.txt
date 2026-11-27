@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /checkins/{id} {
+      allow read: if true;
+      allow create, update: if id.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}@(marley|kynan)$');
+      allow delete: if false;
+    }
+
+    match /items/{id} {
+      allow read, delete: if true;
+      allow create: if request.resource.data.label is string
+                    && request.resource.data.label.size() < 500
+                    && request.resource.data.num is number;
+      allow update: if request.resource.data.diff(resource.data).affectedKeys().hasOnly(['kind']);
+    }
+
+    match /income/{id} {
+      allow read, delete: if true;
+      allow create: if request.resource.data.amount is number
+                    && request.resource.data.by in ['marley','kynan'];
+      allow update: if false;
+    }
+
+    match /goal/{id} {
+      allow read: if true;
+      allow write: if id == 'main' && request.resource.data.target is number;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
