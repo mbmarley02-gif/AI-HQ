@@ -16,11 +16,12 @@ def now():
     return datetime.datetime.now(datetime.timezone.utc)
 
 
-def post(url, headers, body, tries=3):
+def post(url, headers, body, tries=4):
+    time.sleep(8)
     for i in range(tries):
         r = requests.post(url, headers=headers, json=body, timeout=90)
         if r.status_code in (429, 500, 503) and i < tries - 1:
-            time.sleep(10 * (i + 1))
+            time.sleep(20 * (i + 1))
             continue
         r.raise_for_status()
         return r.json()
