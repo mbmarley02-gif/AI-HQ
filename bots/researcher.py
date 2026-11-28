@@ -69,7 +69,7 @@ def main():
         try:
             items = ask_gemini(TOPIC, page)
         except Exception as e:
-            print("Skipped a page:", type(e).__name__)
+            print("Skipped a page:", type(e).__name__, getattr(getattr(e, "response", None), "status_code", ""), getattr(getattr(e, "response", None), "text", "")[:200])
             continue
         for it in items:
             quote = norm(str(it.get("quote", "")))
