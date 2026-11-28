@@ -78,7 +78,7 @@ def main():
             todo.append(data)
     todo = todo[:MAX_ITEMS]
     cache = {}
-    done = skipped = 0
+    done = skipped = fails = 0
     for item in todo:
         dom = domain_of(item["url"])
         if dom not in cache:
